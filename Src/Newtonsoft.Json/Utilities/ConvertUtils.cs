@@ -541,7 +541,7 @@ namespace Newtonsoft.Json.Utilities
                 return ConvertResult.CannotConvertNull;
             }
 #endif
-#if !(DOTNET || PORTABLE40 || PORTABLE)
+#if !(DOTNET || PORTABLE40 || PORTABLE || UNITY3D)
             if (initialValue is INullable)
             {
                 value = EnsureTypeAssignable(ToValue((INullable)initialValue), initialType, targetType);
@@ -611,7 +611,7 @@ namespace Newtonsoft.Json.Utilities
             throw new ArgumentException("Could not cast or convert from {0} to {1}.".FormatWith(CultureInfo.InvariantCulture, (initialType != null) ? initialType.ToString() : "{null}", targetType));
         }
 
-#if !(DOTNET || PORTABLE40 || PORTABLE)
+#if !(DOTNET || PORTABLE40 || PORTABLE || UNITY3D)
         public static object ToValue(INullable nullableValue)
         {
             if (nullableValue == null)

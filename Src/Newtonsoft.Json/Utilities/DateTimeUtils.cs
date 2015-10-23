@@ -57,7 +57,7 @@ namespace Newtonsoft.Json.Utilities
 #endif
         }
 
-#if !(PORTABLE40 || PORTABLE)
+#if !(PORTABLE40 || PORTABLE || UNITY3D)
         public static XmlDateTimeSerializationMode ToSerializationMode(DateTimeKind kind)
         {
             switch (kind)

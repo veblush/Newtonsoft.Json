@@ -969,7 +969,7 @@ namespace Newtonsoft.Json
         }
 #endif
 
-#if !(PORTABLE40 || PORTABLE || DOTNET)
+#if !(PORTABLE40 || PORTABLE || DOTNET || UNITY3D)
         /// <summary>
         /// Serializes the XML node to a JSON string.
         /// </summary>
