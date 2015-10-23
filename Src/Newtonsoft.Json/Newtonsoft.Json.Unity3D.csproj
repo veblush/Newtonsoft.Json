@@ -72,7 +72,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Data" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bson\BsonBinaryType.cs" />
@@ -86,8 +85,6 @@
     <Compile Include="Converters\BinaryConverter.cs" />
     <Compile Include="Converters\BsonObjectIdConverter.cs" />
     <Compile Include="Converters\CustomCreationConverter.cs" />
-    <Compile Include="Converters\DataSetConverter.cs" />
-    <Compile Include="Converters\DataTableConverter.cs" />
     <Compile Include="Converters\DateTimeConverterBase.cs" />
     <Compile Include="Converters\DiscriminatedUnionConverter.cs" />
     <Compile Include="Converters\EntityKeyMemberConverter.cs" />

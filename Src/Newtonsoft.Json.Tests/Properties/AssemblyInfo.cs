@@ -37,6 +37,8 @@ using System.Security;
 [assembly: AssemblyTitle("Json.NET Tests Portable")]
 #elif NETFX_CORE
 [assembly: AssemblyTitle("Json.NET Tests WinRT")]
+#elif UNITY3D
+[assembly: AssemblyTitle("Json.NET Tests Unity3D")]
 #elif NET20
 [assembly: AssemblyTitle("Json.NET Tests .NET 2.0")]
 #elif NET35
@@ -51,7 +53,7 @@ using System.Security;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Newtonsoft")]
 [assembly: AssemblyProduct("Json.NET Tests")]
-[assembly: AssemblyCopyright("Copyright © James Newton-King 2008")]
+[assembly: AssemblyCopyright("Copyright ?James Newton-King 2008")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

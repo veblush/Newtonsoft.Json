@@ -38,6 +38,8 @@ using System.Security;
 [assembly: AssemblyTitle("Json.NET Portable")]
 #elif DOTNET
 [assembly: AssemblyTitle("Json.NET .NET Platform")]
+#elif UNITY3D
+[assembly: AssemblyTitle("Json.NET Unity3D")]
 #elif NET20
 [assembly: AssemblyTitle("Json.NET .NET 2.0")]
 [assembly: AllowPartiallyTrustedCallers]
@@ -65,7 +67,7 @@ using System.Security;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Newtonsoft")]
 [assembly: AssemblyProduct("Json.NET")]
-[assembly: AssemblyCopyright("Copyright © James Newton-King 2008")]
+[assembly: AssemblyCopyright("Copyright ?James Newton-King 2008")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
