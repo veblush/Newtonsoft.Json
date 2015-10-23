@@ -25,7 +25,6 @@
 
 using System;
 using System.Collections;
-using Newtonsoft.Json.Schema;
 #if !(NET35 || NET20 || PORTABLE || PORTABLE40)
 using System.Collections.Concurrent;
 #endif

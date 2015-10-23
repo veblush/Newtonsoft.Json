@@ -24,7 +24,6 @@
 #endregion
 
 using System;
-using Newtonsoft.Json.Schema;
 #if NETFX_CORE
 using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
 using TestFixture = Microsoft.VisualStudio.TestPlatform.UnitTestFramework.TestClassAttribute;
@@ -86,22 +85,5 @@ namespace Newtonsoft.Json.Tests
             Assert.AreEqual("Message!", exception.Message);
             Assert.AreEqual("Inner!", exception.InnerException.Message);
         }
-
-#pragma warning disable 618
-        [Test]
-        public void JsonSchemaException()
-        {
-            JsonSchemaException exception = new JsonSchemaException();
-            Assert.AreEqual("Exception of type 'Newtonsoft.Json.Schema.JsonSchemaException' was thrown.", exception.Message);
-
-            exception = new JsonSchemaException("Message!");
-            Assert.AreEqual("Message!", exception.Message);
-            Assert.AreEqual(null, exception.InnerException);
-
-            exception = new JsonSchemaException("Message!", new Exception("Inner!"));
-            Assert.AreEqual("Message!", exception.Message);
-            Assert.AreEqual("Inner!", exception.InnerException.Message);
-        }
-#pragma warning restore 618
     }
 }

@@ -93,7 +93,6 @@
     <Compile Include="Converters\VersionConverterTests.cs" />
     <Compile Include="JsonArrayAttributeTests.cs" />
     <Compile Include="ExceptionTests.cs" />
-    <Compile Include="JsonValidatingReaderTests.cs" />
     <Compile Include="Linq\ComponentModel\BindingTests.cs" />
     <Compile Include="Linq\ComponentModel\JPropertyDescriptorTests.cs" />
     <Compile Include="Linq\JRawTests.cs" />
@@ -189,9 +188,6 @@
     <Compile Include="TestObjects\RoleTransfer.cs" />
     <Compile Include="Serialization\SerializationErrorHandlingTests.cs" />
     <Compile Include="Serialization\SerializationEventAttributeTests.cs" />
-    <Compile Include="Schema\ExtensionsTests.cs" />
-    <Compile Include="Schema\JsonSchemaModelBuilderTests.cs" />
-    <Compile Include="Schema\JsonSchemaNodeTests.cs" />
     <Compile Include="Serialization\CamelCasePropertyNamesContractResolverTests.cs" />
     <Compile Include="Serialization\PreserveReferencesHandlingTests.cs" />
     <Compile Include="TestObjects\SearchResult.cs" />
@@ -256,9 +252,6 @@
     <Compile Include="TestObjects\Store.cs" />
     <Compile Include="TestObjects\StoreColor.cs" />
     <Compile Include="TestObjects\Person.cs" />
-    <Compile Include="Schema\JsonSchemaBuilderTests.cs" />
-    <Compile Include="Schema\JsonSchemaGeneratorTests.cs" />
-    <Compile Include="Schema\JsonSchemaTests.cs" />
     <Compile Include="TestObjects\DateTimeTestClass.cs" />
     <Compile Include="Converters\IsoDateTimeConverterTests.cs" />
     <Compile Include="JsonConvertTest.cs" />
