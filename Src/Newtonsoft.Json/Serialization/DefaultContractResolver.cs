@@ -1203,9 +1203,11 @@ namespace Newtonsoft.Json.Serialization
             IValueProvider valueProvider;
 
 #if !(PORTABLE40 || PORTABLE || DOTNET)
+#if !UNITY3D
             if (DynamicCodeGeneration)
                 valueProvider = new DynamicValueProvider(member);
             else
+#endif
                 valueProvider = new ReflectionValueProvider(member);
 #elif !(PORTABLE40)
             valueProvider = new ExpressionValueProvider(member);

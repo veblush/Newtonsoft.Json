@@ -412,9 +412,10 @@ namespace Newtonsoft.Json.Serialization
             get
             {
 #if !(PORTABLE40 || PORTABLE || DOTNET)
+#if !UNITY3D
                 if (DynamicCodeGeneration)
                     return DynamicReflectionDelegateFactory.Instance;
-
+#endif
                 return LateBoundReflectionDelegateFactory.Instance;
 #else
                 return ExpressionReflectionDelegateFactory.Instance;
