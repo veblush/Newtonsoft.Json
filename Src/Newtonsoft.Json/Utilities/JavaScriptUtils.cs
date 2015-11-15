@@ -39,6 +39,47 @@ using System.Linq;
 
 namespace Newtonsoft.Json.Utilities
 {
+    internal static class BufferUtils
+    {
+        public static char[] RentBuffer(IJsonBufferPool<char> bufferPool, int minSize)
+        {
+            if (bufferPool == null)
+            {
+                return new char[minSize];
+            }
+
+            char[] buffer = bufferPool.RentBuffer(minSize);
+            return buffer;
+        }
+
+        public static void ReturnBuffer(IJsonBufferPool<char> bufferPool, ref char[] buffer)
+        {
+            if (bufferPool == null)
+            {
+                buffer = null;
+                return;
+            }
+
+            bufferPool.ReturnBuffer(ref buffer);
+        }
+
+        public static void EnsureBufferSize(IJsonBufferPool<char> bufferPool, int size, ref char[] buffer)
+        {
+            if (bufferPool == null)
+            {
+                buffer = new char[size];
+                return;
+            }
+
+            if (buffer != null)
+            {
+                bufferPool.ReturnBuffer(ref buffer);
+            }
+
+            buffer = bufferPool.RentBuffer(size);
+        }
+    }
+
     internal static class JavaScriptUtils
     {
         internal static readonly bool[] SingleQuoteCharEscapeFlags = new bool[128];
@@ -100,7 +141,7 @@ namespace Newtonsoft.Json.Utilities
         }
 
         public static void WriteEscapedJavaScriptString(TextWriter writer, string s, char delimiter, bool appendDelimiters,
-            bool[] charEscapeFlags, StringEscapeHandling stringEscapeHandling, ref char[] writeBuffer)
+            bool[] charEscapeFlags, StringEscapeHandling stringEscapeHandling, IJsonBufferPool<char> bufferPool, ref char[] writeBuffer)
         {
             // leading delimiter
             if (appendDelimiters)
@@ -162,7 +203,9 @@ namespace Newtonsoft.Json.Utilities
                                 else
                                 {
                                     if (writeBuffer == null || writeBuffer.Length < UnicodeTextLength)
-                                        writeBuffer = new char[UnicodeTextLength];
+                                    {
+                                        BufferUtils.EnsureBufferSize(bufferPool, UnicodeTextLength, ref writeBuffer);
+                                    }
 
                                     StringUtils.ToCharAsUnicode(c, writeBuffer);
 
@@ -189,12 +232,16 @@ namespace Newtonsoft.Json.Utilities
 
                         if (writeBuffer == null || writeBuffer.Length < length)
                         {
-                            char[] newBuffer = new char[length];
+                            char[] newBuffer = BufferUtils.RentBuffer(bufferPool, length);
 
                             // the unicode text is already in the buffer
                             // copy it over when creating new buffer
                             if (isEscapedUnicodeText)
+                            {
                                 Array.Copy(writeBuffer, newBuffer, UnicodeTextLength);
+                            }
+
+                            BufferUtils.ReturnBuffer(bufferPool, ref writeBuffer);
 
                             writeBuffer = newBuffer;
                         }
@@ -248,7 +295,7 @@ namespace Newtonsoft.Json.Utilities
             using (StringWriter w = StringUtils.CreateStringWriter(StringUtils.GetLength(value) ?? 16))
             {
                 char[] buffer = null;
-                WriteEscapedJavaScriptString(w, value, delimiter, appendDelimiters, charEscapeFlags, stringEscapeHandling, ref buffer);
+                WriteEscapedJavaScriptString(w, value, delimiter, appendDelimiters, charEscapeFlags, stringEscapeHandling, null, ref buffer);
                 return w.ToString();
             }
         }

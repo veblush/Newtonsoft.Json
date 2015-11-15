@@ -48,6 +48,7 @@ namespace Newtonsoft.Json
         private bool _quoteName;
         private bool[] _charEscapeFlags;
         private char[] _writeBuffer;
+        private IJsonBufferPool<char> _bufferPool;
         private char[] _indentChars;
 
         private Base64Encoder Base64Encoder
@@ -58,6 +59,23 @@ namespace Newtonsoft.Json
                     _base64Encoder = new Base64Encoder(_writer);
 
                 return _base64Encoder;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the writer's character buffer pool.
+        /// </summary>
+        public IJsonBufferPool<char> BufferPool
+        {
+            get { return _bufferPool; }
+            set
+            {
+                if (value == null)
+                {
+                    throw new ArgumentNullException("value");
+                }
+
+                _bufferPool = value;
             }
         }
 
@@ -149,6 +167,8 @@ namespace Newtonsoft.Json
         public override void Close()
         {
             base.Close();
+
+            BufferUtils.ReturnBuffer(_bufferPool, ref _writeBuffer);
 
             if (CloseOutput && _writer != null)
             {
@@ -379,7 +399,7 @@ namespace Newtonsoft.Json
         private void WriteEscapedString(string value, bool quote)
         {
             EnsureWriteBuffer();
-            JavaScriptUtils.WriteEscapedJavaScriptString(_writer, value, _quoteChar, quote, _charEscapeFlags, StringEscapeHandling, ref _writeBuffer);
+            JavaScriptUtils.WriteEscapedJavaScriptString(_writer, value, _quoteChar, quote, _charEscapeFlags, StringEscapeHandling, _bufferPool, ref _writeBuffer);
         }
 
         /// <summary>
@@ -713,7 +733,10 @@ namespace Newtonsoft.Json
         private void EnsureWriteBuffer()
         {
             if (_writeBuffer == null)
-                _writeBuffer = new char[35]; // maximum buffer sized used when writing iso date
+            {
+                // maximum buffer sized used when writing iso date
+                _writeBuffer = BufferUtils.RentBuffer(_bufferPool, 35);
+            }
         }
 
         private void WriteIntegerValue(long value)

@@ -173,7 +173,15 @@ namespace Newtonsoft.Json
         public DateTimeZoneHandling DateTimeZoneHandling
         {
             get { return _dateTimeZoneHandling; }
-            set { _dateTimeZoneHandling = value; }
+            set
+            {
+                if (value < DateTimeZoneHandling.Local || value > DateTimeZoneHandling.RoundtripKind)
+                {
+                    throw new ArgumentOutOfRangeException("value");
+                }
+
+                _dateTimeZoneHandling = value;
+            }
         }
 
         /// <summary>
@@ -182,7 +190,21 @@ namespace Newtonsoft.Json
         public DateParseHandling DateParseHandling
         {
             get { return _dateParseHandling; }
-            set { _dateParseHandling = value; }
+            set
+            {
+                if (value < DateParseHandling.None ||
+#if !NET20
+                    value > DateParseHandling.DateTimeOffset
+#else
+                    value > DateParseHandling.DateTime
+#endif
+                    )
+                {
+                    throw new ArgumentOutOfRangeException("value");
+                }
+
+                _dateParseHandling = value;
+            }
         }
 
         /// <summary>
@@ -191,7 +213,15 @@ namespace Newtonsoft.Json
         public FloatParseHandling FloatParseHandling
         {
             get { return _floatParseHandling; }
-            set { _floatParseHandling = value; }
+            set
+            {
+                if (value < FloatParseHandling.Double || value > FloatParseHandling.Decimal)
+                {
+                    throw new ArgumentOutOfRangeException("value");
+                }
+
+                _floatParseHandling = value;
+            }
         }
 
         /// <summary>
@@ -392,7 +422,7 @@ namespace Newtonsoft.Json
         /// <summary>
         /// Reads the next JSON token from the stream as a <see cref="Nullable{DateTime}"/>.
         /// </summary>
-        /// <returns>A <see cref="String"/>. This method will return <c>null</c> at the end of an array.</returns>
+        /// <returns>A <see cref="Nullable{DateTime}"/>. This method will return <c>null</c> at the end of an array.</returns>
         public abstract DateTime? ReadAsDateTime();
 
 #if !NET20
@@ -448,11 +478,9 @@ namespace Newtonsoft.Json
                     return null;
                 }
 
-                object temp;
                 DateTimeOffset dt;
-                if (DateTimeUtils.TryParseDateTime(s, DateParseHandling.DateTimeOffset, DateTimeZoneHandling, _dateFormatString, Culture, out temp))
+                if (DateTimeUtils.TryParseDateTimeOffset(s, _dateFormatString, Culture, out dt))
                 {
-                    dt = (DateTimeOffset)temp;
                     SetToken(JsonToken.Date, dt, false);
                     return dt;
                 }
@@ -763,10 +791,8 @@ namespace Newtonsoft.Json
                 }
 
                 DateTime dt;
-                object temp;
-                if (DateTimeUtils.TryParseDateTime(s, DateParseHandling.DateTime, DateTimeZoneHandling, _dateFormatString, Culture, out temp))
+                if (DateTimeUtils.TryParseDateTime(s, DateTimeZoneHandling, _dateFormatString, Culture, out dt))
                 {
-                    dt = (DateTime)temp;
                     dt = DateTimeUtils.EnsureDateTime(dt, DateTimeZoneHandling);
                     SetToken(JsonToken.Date, dt, false);
                     return dt;

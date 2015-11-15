@@ -238,6 +238,22 @@ namespace Newtonsoft.Json.Tests.Serialization
         }
 
         [Test]
+        public void CoercedEmptyStringWithRequired_DisallowNull()
+        {
+            ExceptionAssert.Throws<JsonSerializationException>(() =>
+            {
+                JsonConvert.DeserializeObject<Binding_DisallowNull>("{requiredProperty:''}");
+            }, "Required property 'RequiredProperty' expects a non-null value. Path '', line 1, position 21.");
+        }
+
+        [Test]
+        public void DisallowNull_NoValue()
+        {
+            Binding_DisallowNull o = JsonConvert.DeserializeObject<Binding_DisallowNull>("{}");
+            Assert.IsNull(o.RequiredProperty);
+        }
+
+        [Test]
         public void CoercedEmptyStringWithRequiredConstructor()
         {
             ExceptionAssert.Throws<JsonSerializationException>(() =>
@@ -250,6 +266,46 @@ namespace Newtonsoft.Json.Tests.Serialization
         {
             [JsonProperty(Required = Required.Always)]
             public Binding RequiredProperty { get; set; }
+        }
+
+        public class Binding_DisallowNull
+        {
+            [JsonProperty(Required = Required.DisallowNull)]
+            public Binding RequiredProperty { get; set; }
+        }
+
+        [Test]
+        public void Serialize_Required_DisallowedNull()
+        {
+            ExceptionAssert.Throws<JsonSerializationException>(() =>
+            {
+                JsonConvert.SerializeObject(new Binding_DisallowNull());
+            }, "Cannot write a null value for property 'RequiredProperty'. Property requires a non-null value. Path ''.");
+        }
+
+        [Test]
+        public void Serialize_Required_DisallowedNull_NullValueHandlingIgnore()
+        {
+            string json = JsonConvert.SerializeObject(new Binding_DisallowNull(), new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore
+            });
+            Assert.AreEqual("{}", json);
+        }
+
+        [JsonObject(ItemRequired = Required.DisallowNull)]
+        public class DictionaryWithNoNull
+        {
+            public string Name { get; set; }
+        }
+
+        [Test]
+        public void Serialize_ItemRequired_DisallowedNull()
+        {
+            ExceptionAssert.Throws<JsonSerializationException>(() =>
+            {
+                JsonConvert.SerializeObject(new DictionaryWithNoNull());
+            }, "Cannot write a null value for property 'Name'. Property requires a non-null value. Path ''.");
         }
 
         public class DictionaryKeyContractResolver : DefaultContractResolver
@@ -7488,6 +7544,34 @@ Path '', line 1, position 1.");
         }
 
         [Test]
+        public void DateTimeDictionaryKey_DateTime_Iso_Local()
+        {
+            IDictionary<DateTime, int> dic1 = new Dictionary<DateTime, int>
+            {
+                { new DateTime(2000, 12, 12, 12, 12, 12, DateTimeKind.Utc), 1 },
+                { new DateTime(2013, 12, 12, 12, 12, 12, DateTimeKind.Utc), 2 }
+            };
+
+            string json = JsonConvert.SerializeObject(dic1, Formatting.Indented, new JsonSerializerSettings
+            {
+                DateTimeZoneHandling = DateTimeZoneHandling.Local
+            });
+
+            JObject o = JObject.Parse(json);
+            Assert.IsFalse(o.Properties().ElementAt(0).Name.Contains("Z"));
+            Assert.IsFalse(o.Properties().ElementAt(1).Name.Contains("Z"));
+
+            IDictionary<DateTime, int> dic2 = JsonConvert.DeserializeObject<IDictionary<DateTime, int>>(json, new JsonSerializerSettings
+            {
+                DateTimeZoneHandling = DateTimeZoneHandling.Utc
+            });
+
+            Assert.AreEqual(2, dic2.Count);
+            Assert.AreEqual(1, dic2[new DateTime(2000, 12, 12, 12, 12, 12, DateTimeKind.Utc)]);
+            Assert.AreEqual(2, dic2[new DateTime(2013, 12, 12, 12, 12, 12, DateTimeKind.Utc)]);
+        }
+
+        [Test]
         public void DateTimeDictionaryKey_DateTime_MS()
         {
             IDictionary<DateTime, int> dic1 = new Dictionary<DateTime, int>
@@ -8060,6 +8144,10 @@ Path '', line 1, position 1.");
         [Test]
         public void DateFormatString()
         {
+            CultureInfo culture = new CultureInfo("en-NZ");
+            culture.DateTimeFormat.AMDesignator = "a.m.";
+            culture.DateTimeFormat.PMDesignator = "p.m.";
+
             IList<object> dates = new List<object>
             {
                 new DateTime(2000, 12, 12, 12, 12, 12, DateTimeKind.Utc),
@@ -8069,7 +8157,7 @@ Path '', line 1, position 1.");
             string json = JsonConvert.SerializeObject(dates, Formatting.Indented, new JsonSerializerSettings
             {
                 DateFormatString = "yyyy tt",
-                Culture = new CultureInfo("en-NZ")
+                Culture = culture
             });
 
             StringAssert.AreEqual(@"[
@@ -8101,6 +8189,10 @@ Path '', line 1, position 1.");
         [Test]
         public void JsonSerializerDateFormatString()
         {
+            CultureInfo culture = new CultureInfo("en-NZ");
+            culture.DateTimeFormat.AMDesignator = "a.m.";
+            culture.DateTimeFormat.PMDesignator = "p.m.";
+
             IList<object> dates = new List<object>
             {
                 new DateTime(2000, 12, 12, 12, 12, 12, DateTimeKind.Utc),
@@ -8113,7 +8205,7 @@ Path '', line 1, position 1.");
             JsonSerializer serializer = JsonSerializer.Create(new JsonSerializerSettings
             {
                 DateFormatString = "yyyy tt",
-                Culture = new CultureInfo("en-NZ"),
+                Culture = culture,
                 Formatting = Formatting.Indented
             });
             serializer.Serialize(jsonWriter, dates);
@@ -8466,6 +8558,57 @@ Path '', line 1, position 1.");
   },
   {
     ""$ref"": ""ae3c399c-058d-431d-91b0-a36c266441b9""
+  }
+]", json);
+        }
+
+        [Test]
+        public void NullReferenceResolver()
+        {
+            PersonReference john = new PersonReference
+            {
+                Id = new Guid("0B64FFDF-D155-44AD-9689-58D9ADB137F3"),
+                Name = "John Smith"
+            };
+
+            PersonReference jane = new PersonReference
+            {
+                Id = new Guid("AE3C399C-058D-431D-91B0-A36C266441B9"),
+                Name = "Jane Smith"
+            };
+
+            john.Spouse = jane;
+            jane.Spouse = john;
+
+            IList<PersonReference> people = new List<PersonReference>
+            {
+                john,
+                jane
+            };
+
+            string json = JsonConvert.SerializeObject(people, new JsonSerializerSettings
+            {
+#pragma warning disable 618
+                ReferenceResolver = null,
+#pragma warning restore 618
+                PreserveReferencesHandling = PreserveReferencesHandling.Objects,
+                Formatting = Formatting.Indented
+            });
+
+            StringAssert.AreEqual(@"[
+  {
+    ""$id"": ""1"",
+    ""Name"": ""John Smith"",
+    ""Spouse"": {
+      ""$id"": ""2"",
+      ""Name"": ""Jane Smith"",
+      ""Spouse"": {
+        ""$ref"": ""1""
+      }
+    }
+  },
+  {
+    ""$ref"": ""2""
   }
 ]", json);
         }

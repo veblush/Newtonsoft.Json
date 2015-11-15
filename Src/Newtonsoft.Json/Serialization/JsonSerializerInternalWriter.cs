@@ -490,7 +490,13 @@ namespace Newtonsoft.Json.Serialization
                         JsonObjectContract objectContract = contract as JsonObjectContract;
                         Required resolvedRequired = property._required ?? ((objectContract != null) ? objectContract.ItemRequired : null) ?? Required.Default;
                         if (resolvedRequired == Required.Always)
+                        {
                             throw JsonSerializationException.Create(null, writer.ContainerPath, "Cannot write a null value for property '{0}'. Property requires a value.".FormatWith(CultureInfo.InvariantCulture, property.PropertyName), null);
+                        }
+                        if (resolvedRequired == Required.DisallowNull)
+                        {
+                            throw JsonSerializationException.Create(null, writer.ContainerPath, "Cannot write a null value for property '{0}'. Property requires a non-null value.".FormatWith(CultureInfo.InvariantCulture, property.PropertyName), null);
+                        }
                     }
 
                     return true;
@@ -980,9 +986,11 @@ namespace Newtonsoft.Json.Serialization
                 JsonPrimitiveContract primitiveContract = (JsonPrimitiveContract)contract;
                 if (primitiveContract.TypeCode == PrimitiveTypeCode.DateTime || primitiveContract.TypeCode == PrimitiveTypeCode.DateTimeNullable)
                 {
+                    DateTime dt = DateTimeUtils.EnsureDateTime((DateTime)name, writer.DateTimeZoneHandling);
+
                     escape = false;
                     StringWriter sw = new StringWriter(CultureInfo.InvariantCulture);
-                    DateTimeUtils.WriteDateTimeString(sw, (DateTime)name, writer.DateFormatHandling, writer.DateFormatString, writer.Culture);
+                    DateTimeUtils.WriteDateTimeString(sw, dt, writer.DateFormatHandling, writer.DateFormatString, writer.Culture);
                     return sw.ToString();
                 }
 #if !NET20
