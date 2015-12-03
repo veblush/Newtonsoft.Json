@@ -27,6 +27,9 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+#if !UNITY3D
+using Newtonsoft.Json.Schema;
+#endif
 #if !(NET20 || NET35 || PORTABLE40 || PORTABLE)
 using System.Numerics;
 #endif

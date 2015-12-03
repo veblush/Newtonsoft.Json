@@ -5107,7 +5107,7 @@ Path '', line 1, position 1.");
         }
 #endif
 
-#if !(NET20 || PORTABLE40)
+#if !(NET20 || PORTABLE40 || UNITY3D)
         [Test]
         public void SerializeDeserializeXNodeProperties()
         {

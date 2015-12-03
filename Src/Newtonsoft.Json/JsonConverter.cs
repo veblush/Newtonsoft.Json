@@ -27,6 +27,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Newtonsoft.Json.Utilities;
+#if !UNITY3D
+using Newtonsoft.Json.Schema;
+#endif
 
 namespace Newtonsoft.Json
 {
@@ -61,6 +64,23 @@ namespace Newtonsoft.Json
         /// 	<c>true</c> if this instance can convert the specified object type; otherwise, <c>false</c>.
         /// </returns>
         public abstract bool CanConvert(Type objectType);
+
+#if !UNITY3D
+        /// <summary>
+        /// <para>
+        /// Gets the <see cref="JsonSchema"/> of the JSON produced by the JsonConverter.
+        /// </para>
+        /// <note type="caution">
+        /// JSON Schema validation has been moved to its own package. See <see href="http://www.newtonsoft.com/jsonschema">http://www.newtonsoft.com/jsonschema</see> for more details.
+        /// </note>
+        /// </summary>
+        /// <returns>The <see cref="JsonSchema"/> of the JSON produced by the JsonConverter.</returns>
+        [Obsolete("JSON Schema validation has been moved to its own package. It is strongly recommended that you do not override GetSchema() in your own converter. It is not used by Json.NET and will be removed at some point in the future. Converter's that override GetSchema() will stop working when it is removed.")]
+        public virtual JsonSchema GetSchema()
+        {
+            return null;
+        }
+#endif
 
         /// <summary>
         /// Gets a value indicating whether this <see cref="JsonConverter"/> can read JSON.

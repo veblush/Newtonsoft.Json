@@ -717,7 +717,7 @@ Parameter name: arrayIndex");
             Assert.AreEqual(p4, l[1]);
         }
 
-#if !(NET20 || PORTABLE || PORTABLE40)
+#if !(NET20 || PORTABLE || PORTABLE40 || UNITY3D)
         [Test]
         public void PropertyChanging()
         {
@@ -1260,7 +1260,7 @@ Parameter name: arrayIndex");
             }, "Can not add property Test3 to Newtonsoft.Json.Linq.JObject. Property with the same name already exists on object.");
         }
 
-#if !(NETFX_CORE || PORTABLE || DNXCORE50 || PORTABLE40)
+#if !(NETFX_CORE || PORTABLE || DNXCORE50 || PORTABLE40 || UNITY3D)
         [Test]
         public void IBindingListSortDirection()
         {
@@ -1696,7 +1696,7 @@ Parameter name: arrayIndex");
             }, "Unexpected end of content while loading JObject. Path 'short.error.code', line 6, position 14.");
         }
 
-#if !(NETFX_CORE || PORTABLE || DNXCORE50 || PORTABLE40)
+#if !(NETFX_CORE || PORTABLE || DNXCORE50 || PORTABLE40 || UNITY3D)
         [Test]
         public void GetProperties()
         {

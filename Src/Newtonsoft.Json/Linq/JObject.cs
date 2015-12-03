@@ -52,10 +52,10 @@ namespace Newtonsoft.Json.Linq
     ///   <code lang="cs" source="..\Src\Newtonsoft.Json.Tests\Documentation\LinqToJsonTests.cs" region="LinqToJsonCreateParse" title="Parsing a JSON Object from Text" />
     /// </example>
     public class JObject : JContainer, IDictionary<string, JToken>, INotifyPropertyChanged
-#if !(DOTNET || PORTABLE40 || PORTABLE)
+#if !(DOTNET || PORTABLE40 || PORTABLE || UNITY3D)
         , ICustomTypeDescriptor
 #endif
-#if !(NET20 || PORTABLE40 || PORTABLE)
+#if !(NET20 || PORTABLE40 || PORTABLE || UNITY3D)
         , INotifyPropertyChanging
 #endif
     {
@@ -75,7 +75,7 @@ namespace Newtonsoft.Json.Linq
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
-#if !(NET20 || PORTABLE || PORTABLE40)
+#if !(NET20 || PORTABLE || PORTABLE40 || UNITY3D)
         /// <summary>
         /// Occurs when a property value is changing.
         /// </summary>
@@ -192,7 +192,7 @@ namespace Newtonsoft.Json.Linq
         internal void InternalPropertyChanged(JProperty childProperty)
         {
             OnPropertyChanged(childProperty.Name);
-#if !(DOTNET || PORTABLE40 || PORTABLE)
+#if !(DOTNET || PORTABLE40 || PORTABLE || UNITY3D)
             if (_listChanged != null)
                 OnListChanged(new ListChangedEventArgs(ListChangedType.ItemChanged, IndexOfItem(childProperty)));
 #endif
@@ -204,7 +204,7 @@ namespace Newtonsoft.Json.Linq
 
         internal void InternalPropertyChanging(JProperty childProperty)
         {
-#if !(NET20 || PORTABLE40 || PORTABLE)
+#if !(NET20 || PORTABLE40 || PORTABLE || UNITY3D)
             OnPropertyChanging(childProperty.Name);
 #endif
         }
@@ -307,7 +307,7 @@ namespace Newtonsoft.Json.Linq
                 }
                 else
                 {
-#if !(NET20 || PORTABLE40 || PORTABLE)
+#if !(NET20 || PORTABLE40 || PORTABLE || UNITY3D)
                     OnPropertyChanging(propertyName);
 #endif
                     Add(new JProperty(propertyName, value));
@@ -645,7 +645,7 @@ namespace Newtonsoft.Json.Linq
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
 
-#if !(PORTABLE40 || PORTABLE || NET20)
+#if !(PORTABLE40 || PORTABLE || NET20 || UNITY3D)
         /// <summary>
         /// Raises the <see cref="PropertyChanging"/> event with the provided arguments.
         /// </summary>
@@ -657,7 +657,7 @@ namespace Newtonsoft.Json.Linq
         }
 #endif
 
-#if !(DOTNET || PORTABLE40 || PORTABLE)
+#if !(DOTNET || PORTABLE40 || PORTABLE || UNITY3D)
         // include custom type descriptor on JObject rather than use a provider because the properties are specific to a type
 
         #region ICustomTypeDescriptor
