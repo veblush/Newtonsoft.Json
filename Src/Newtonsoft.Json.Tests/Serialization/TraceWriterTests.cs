@@ -43,7 +43,7 @@ namespace Newtonsoft.Json.Tests.Serialization
     [TestFixture]
     public class TraceWriterTests : TestFixtureBase
     {
-#if !(PORTABLE || DNXCORE50 || NETFX_CORE || PORTABLE40)
+#if !(PORTABLE || DNXCORE50 || NETFX_CORE || PORTABLE40 || UNITY3D)
         [Test]
         public void DiagnosticsTraceWriterTest()
         {

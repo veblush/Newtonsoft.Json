@@ -25,6 +25,9 @@
 
 using System;
 using System.Collections;
+#if !UNITY3D
+using Newtonsoft.Json.Schema;
+#endif
 #if !(NET35 || NET20 || PORTABLE || PORTABLE40)
 using System.Collections.Concurrent;
 #endif
@@ -38,6 +41,9 @@ using System.Reflection;
 using System.Runtime.Serialization;
 #if !(DOTNET || PORTABLE || PORTABLE40)
 using System.Security.Permissions;
+#endif
+#if !UNITY3D
+using System.Xml.Serialization;
 #endif
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Utilities;
@@ -93,9 +99,9 @@ namespace Newtonsoft.Json.Serialization
     /// </summary>
     public class DefaultContractResolver : IContractResolver
     {
-#pragma warning disable 612,618
+#pragma warning disable 612, 618
         private static readonly IContractResolver _instance = new DefaultContractResolver(true);
-#pragma warning restore 612,618
+#pragma warning restore 612, 618
 
         internal static IContractResolver Instance
         {
@@ -104,7 +110,7 @@ namespace Newtonsoft.Json.Serialization
 
         private static readonly JsonConverter[] BuiltInConverters =
         {
-#if !(NET20 || DOTNET || PORTABLE40 || PORTABLE)
+#if !(NET20 || DOTNET || PORTABLE40 || PORTABLE || UNITY3D)
             new EntityKeyMemberConverter(),
 #endif
 #if !(NET35 || NET20 || PORTABLE40)
@@ -115,6 +121,10 @@ namespace Newtonsoft.Json.Serialization
 #endif
 #if !(DOTNET || PORTABLE40 || PORTABLE)
             new BinaryConverter(),
+#if !UNITY3D
+            new DataSetConverter(),
+            new DataTableConverter(),
+#endif
 #endif
 #if !(NET35 || NET20)
             new DiscriminatedUnionConverter(),
