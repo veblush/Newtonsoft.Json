@@ -46,6 +46,7 @@ using System.Security;
 #elif NET40
 [assembly: AssemblyTitle("Json.NET Tests .NET 4.0")]
 #else
+
 [assembly: AssemblyTitle("Json.NET Tests")]
 #endif
 
