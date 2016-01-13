@@ -147,7 +147,8 @@ namespace Newtonsoft.Json.Converters
             {
                 return new SqlBinary(data);
             }
-#endif            throw JsonSerializationException.Create(reader, "Unexpected object type when writing binary: {0}".FormatWith(CultureInfo.InvariantCulture, objectType));
+#endif
+            throw JsonSerializationException.Create(reader, "Unexpected object type when writing binary: {0}".FormatWith(CultureInfo.InvariantCulture, objectType));
         }
 
         private byte[] ReadByteArray(JsonReader reader)

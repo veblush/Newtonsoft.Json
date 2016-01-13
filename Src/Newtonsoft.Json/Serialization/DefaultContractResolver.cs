@@ -1345,14 +1345,15 @@ namespace Newtonsoft.Json.Serialization
                 valueProvider = new DynamicValueProvider(member);
             }
             else
-#endif            {                valueProvider = new ReflectionValueProvider(member);
+#endif
+            {
+                valueProvider = new ReflectionValueProvider(member);
             }
 #elif !(PORTABLE40)
             valueProvider = new ExpressionValueProvider(member);
 #else
             valueProvider = new ReflectionValueProvider(member);
 #endif
-
             return valueProvider;
         }
 
