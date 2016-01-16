@@ -1,8 +1,8 @@
 ﻿{
   "frameworks": {
-    "net20": {}
+    "net35": {}
   },
   "runtimes": {
-    "win-anycpu": {}
+    "win": {}
   }
 }
