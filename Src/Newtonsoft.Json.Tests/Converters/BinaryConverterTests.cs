@@ -125,7 +125,7 @@ namespace Newtonsoft.Json.Tests.Converters
 }", json);
         }
 
-#if !(PORTABLE || PORTABLE40 || DNXCORE50)
+#if !(PORTABLE || PORTABLE40 || DNXCORE50 || UNITY3D)
         public class SqlBinaryClass
         {
             public SqlBinary SqlBinary { get; set; }

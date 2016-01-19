@@ -302,6 +302,7 @@ undefined
             Assert.AreEqual("person.$id", idProperty.Path);
         }
 
+#if !UNITY3D
         [Test]
         public void EscapedPath()
         {
@@ -350,7 +351,7 @@ undefined
 
             Assert.AreEqual(value, selectedValue);
         }
-
+#endif
         [Test]
         public void ForEach()
         {
@@ -455,7 +456,7 @@ undefined
         [Test]
         public void GoogleSearchAPI()
         {
-            #region GoogleJson
+#region GoogleJson
             string json = @"{
     results:
         [
@@ -534,7 +535,7 @@ keyword such as type of business.""
         ]
 }
 ";
-            #endregion
+#endregion
 
             JObject o = JObject.Parse(json);
 

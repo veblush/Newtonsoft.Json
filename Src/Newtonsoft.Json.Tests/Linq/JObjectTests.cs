@@ -47,7 +47,9 @@ using Newtonsoft.Json.Linq;
 using System.IO;
 using System.Collections;
 #if !(NETFX_CORE || DNXCORE50)
+#if !UNITY3D
 using System.Web.UI;
+#endif
 #endif
 #if NET20
 using Newtonsoft.Json.Utilities.LinqBridge;
@@ -341,7 +343,12 @@ namespace Newtonsoft.Json.Tests.Linq
             {
                 JObject o = new JObject();
                 ((ICollection<KeyValuePair<string, JToken>>)o).CopyTo(null, 0);
-            }, @"Value cannot be null.
+            },
+#if UNITY3D
+            @"Argument cannot be null.
+Parameter name: array",
+#endif
+            @"Value cannot be null.
 Parameter name: array");
         }
 
@@ -719,7 +726,7 @@ Parameter name: arrayIndex");
             Assert.AreEqual(p4, l[1]);
         }
 
-#if !(NET20 || PORTABLE || PORTABLE40)
+#if !(NET20 || PORTABLE || PORTABLE40 || UNITY3D)
         [Test]
         public void PropertyChanging()
         {
@@ -1262,7 +1269,7 @@ Parameter name: arrayIndex");
             }, "Can not add property Test3 to Newtonsoft.Json.Linq.JObject. Property with the same name already exists on object.");
         }
 
-#if !(NETFX_CORE || PORTABLE || DNXCORE50 || PORTABLE40)
+#if !(NETFX_CORE || PORTABLE || DNXCORE50 || PORTABLE40 || UNITY3D)
         [Test]
         public void IBindingListSortDirection()
         {
@@ -1698,7 +1705,7 @@ Parameter name: arrayIndex");
             }, "Unexpected end of content while loading JObject. Path 'short.error.code', line 6, position 14.");
         }
 
-#if !(NETFX_CORE || PORTABLE || DNXCORE50 || PORTABLE40)
+#if !(NETFX_CORE || PORTABLE || DNXCORE50 || PORTABLE40 || UNITY3D)
         [Test]
         public void GetProperties()
         {

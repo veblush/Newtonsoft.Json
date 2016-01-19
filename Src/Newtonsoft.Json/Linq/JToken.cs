@@ -23,9 +23,13 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 #endregion
 
+#if !NO_JSONLINQ
+
 using System;
 using System.Collections.Generic;
+#if !UNITY3D
 using Newtonsoft.Json.Linq.JsonPath;
+#endif
 #if !(NET35 || NET20 || PORTABLE40)
 using System.Dynamic;
 using System.Linq.Expressions;
@@ -486,7 +490,7 @@ namespace Newtonsoft.Json.Linq
             return (Array.IndexOf(validTypes, o.Type) != -1) || (nullable && (o.Type == JTokenType.Null || o.Type == JTokenType.Undefined));
         }
 
-        #region Cast from operators
+#region Cast from operators
         /// <summary>
         /// Performs an explicit conversion from <see cref="Newtonsoft.Json.Linq.JToken"/> to <see cref="System.Boolean"/>.
         /// </summary>
@@ -1492,9 +1496,9 @@ namespace Newtonsoft.Json.Linq
             return ConvertUtils.ToBigInteger(v.Value);
         }
 #endif
-        #endregion
+#endregion
 
-        #region Cast to operators
+#region Cast to operators
         /// <summary>
         /// Performs an implicit conversion from <see cref="Boolean"/> to <see cref="JToken"/>.
         /// </summary>
@@ -1858,7 +1862,7 @@ namespace Newtonsoft.Json.Linq
         {
             return new JValue(value);
         }
-        #endregion
+#endregion
 
         IEnumerator IEnumerable.GetEnumerator()
         {
@@ -2288,6 +2292,7 @@ namespace Newtonsoft.Json.Linq
             }
         }
 
+#if !UNITY3D
         /// <summary>
         /// Selects a <see cref="JToken"/> using a JPath expression. Selects the token that matches the object path.
         /// </summary>
@@ -2351,6 +2356,7 @@ namespace Newtonsoft.Json.Linq
             JPath p = new JPath(path);
             return p.Evaluate(this, errorWhenNoMatch);
         }
+#endif
 
 #if !(NET35 || NET20 || PORTABLE40)
         /// <summary>
@@ -2702,3 +2708,5 @@ namespace Newtonsoft.Json.Linq
         }
     }
 }
+
+#endif

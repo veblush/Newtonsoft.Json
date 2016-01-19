@@ -25,7 +25,9 @@
 
 using System;
 using System.Collections;
+#if !UNITY3D
 using Newtonsoft.Json.Schema;
+#endif
 #if !(NET35 || NET20 || PORTABLE || PORTABLE40)
 using System.Collections.Concurrent;
 #endif
@@ -40,7 +42,9 @@ using System.Runtime.Serialization;
 #if !(DOTNET || PORTABLE || PORTABLE40)
 using System.Security.Permissions;
 #endif
+#if !UNITY3D
 using System.Xml.Serialization;
+#endif
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Utilities;
 using Newtonsoft.Json.Linq;
@@ -97,9 +101,9 @@ namespace Newtonsoft.Json.Serialization
     /// </summary>
     public class DefaultContractResolver : IContractResolver
     {
-#pragma warning disable 612,618
+#pragma warning disable 612, 618
         private static readonly IContractResolver _instance = new DefaultContractResolver(true);
-#pragma warning restore 612,618
+#pragma warning restore 612, 618
 
         internal static IContractResolver Instance
         {
@@ -108,25 +112,29 @@ namespace Newtonsoft.Json.Serialization
 
         private static readonly JsonConverter[] BuiltInConverters =
         {
-#if !(NET20 || DOTNET || PORTABLE40 || PORTABLE)
+#if !(NET20 || DOTNET || PORTABLE40 || PORTABLE || UNITY3D)
             new EntityKeyMemberConverter(),
 #endif
 #if !(NET35 || NET20 || PORTABLE40)
             new ExpandoObjectConverter(),
 #endif
-#if !(PORTABLE40)
+#if !(PORTABLE40 || UNITY3D)
             new XmlNodeConverter(),
 #endif
 #if !(DOTNET || PORTABLE40 || PORTABLE)
             new BinaryConverter(),
+#if !UNITY3D
             new DataSetConverter(),
             new DataTableConverter(),
+#endif
 #endif
 #if !(NET35 || NET20)
             new DiscriminatedUnionConverter(),
 #endif
             new KeyValuePairConverter(),
+#if !NO_BSON
             new BsonObjectIdConverter(),
+#endif
             new RegexConverter()
         };
 
@@ -482,10 +490,12 @@ namespace Newtonsoft.Json.Serialization
                     Type keyType = dictionaryType.GetGenericArguments()[0];
                     Type valueType = dictionaryType.GetGenericArguments()[1];
 
+#if !NO_JSONLINQ
                     if (keyType.IsAssignableFrom(typeof(string)) && valueType.IsAssignableFrom(typeof(JToken)))
                     {
                         return true;
                     }
+#endif
                 }
 
                 throw new JsonException("Invalid extension data attribute on '{0}'. Member '{1}' type must implement IDictionary<string, JToken>.".FormatWith(CultureInfo.InvariantCulture, GetClrTypeFullName(m.DeclaringType), m.Name));
@@ -1135,12 +1145,12 @@ namespace Newtonsoft.Json.Serialization
             {
                 return CreateDictionaryContract(objectType);
             }
-
+#if !NO_JSONLINQ
             if (t == typeof(JToken) || t.IsSubclassOf(typeof(JToken)))
             {
                 return CreateLinqContract(objectType);
             }
-
+#endif
             if (CollectionUtils.IsDictionaryType(t))
             {
                 return CreateDictionaryContract(objectType);
@@ -1194,7 +1204,11 @@ namespace Newtonsoft.Json.Serialization
             if (typeof(IConvertible).IsAssignableFrom(t)
                 || (ReflectionUtils.IsNullableType(t) && typeof(IConvertible).IsAssignableFrom(Nullable.GetUnderlyingType(t))))
             {
+#if NO_JSONLINQ
+                return true;
+#else
                 return !typeof(JToken).IsAssignableFrom(t);
+#endif
             }
 
             return false;
@@ -1333,11 +1347,13 @@ namespace Newtonsoft.Json.Serialization
             IValueProvider valueProvider;
 
 #if !(PORTABLE40 || PORTABLE || DOTNET)
+#if !UNITY3D
             if (DynamicCodeGeneration)
             {
                 valueProvider = new DynamicValueProvider(member);
             }
             else
+#endif
             {
                 valueProvider = new ReflectionValueProvider(member);
             }
@@ -1346,7 +1362,6 @@ namespace Newtonsoft.Json.Serialization
 #else
             valueProvider = new ReflectionValueProvider(member);
 #endif
-
             return valueProvider;
         }
 

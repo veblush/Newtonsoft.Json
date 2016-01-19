@@ -389,7 +389,7 @@ namespace Newtonsoft.Json.Serialization
             {
                 if (_dynamicCodeGeneration == null)
                 {
-#if !(DOTNET || PORTABLE40 || PORTABLE)
+#if !(DOTNET || PORTABLE40 || PORTABLE || UNITY3D)
                     try
                     {
                         new ReflectionPermission(ReflectionPermissionFlag.MemberAccess).Demand();
@@ -446,11 +446,12 @@ namespace Newtonsoft.Json.Serialization
             get
             {
 #if !(PORTABLE40 || PORTABLE || DOTNET)
+#if !UNITY3D
                 if (DynamicCodeGeneration)
                 {
                     return DynamicReflectionDelegateFactory.Instance;
                 }
-
+#endif
                 return LateBoundReflectionDelegateFactory.Instance;
 #else
                 return ExpressionReflectionDelegateFactory.Instance;

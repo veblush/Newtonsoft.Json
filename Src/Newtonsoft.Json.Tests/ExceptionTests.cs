@@ -24,7 +24,9 @@
 #endregion
 
 using System;
+#if !UNITY3D
 using Newtonsoft.Json.Schema;
+#endif
 #if NETFX_CORE
 using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
 using TestFixture = Microsoft.VisualStudio.TestPlatform.UnitTestFramework.TestClassAttribute;
@@ -88,6 +90,7 @@ namespace Newtonsoft.Json.Tests
             Assert.AreEqual("Inner!", exception.InnerException.Message);
         }
 
+#if !UNITY3D
 #pragma warning disable 618
         [Test]
         public void JsonSchemaException()
@@ -104,5 +107,6 @@ namespace Newtonsoft.Json.Tests
             Assert.AreEqual("Inner!", exception.InnerException.Message);
         }
 #pragma warning restore 618
+#endif
     }
 }

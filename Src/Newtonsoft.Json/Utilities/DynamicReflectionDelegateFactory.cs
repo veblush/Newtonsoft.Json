@@ -23,7 +23,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 #endregion
 
-#if !(DOTNET || PORTABLE || PORTABLE40)
+#if !(DOTNET || PORTABLE || PORTABLE40 || UNITY3D)
 using System;
 using System.Collections.Generic;
 #if NET20

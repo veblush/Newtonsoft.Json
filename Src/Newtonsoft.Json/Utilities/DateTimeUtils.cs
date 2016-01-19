@@ -25,7 +25,9 @@
 
 using System;
 using System.IO;
+#if !UNITY3D
 using System.Xml;
+#endif
 using System.Globalization;
 
 namespace Newtonsoft.Json.Utilities
@@ -51,14 +53,14 @@ namespace Newtonsoft.Json.Utilities
 
         public static TimeSpan GetUtcOffset(this DateTime d)
         {
-#if NET20
+#if NET20 || UNITY3D
             return TimeZone.CurrentTimeZone.GetUtcOffset(d);
 #else
             return TimeZoneInfo.Local.GetUtcOffset(d);
 #endif
         }
 
-#if !(PORTABLE40 || PORTABLE)
+#if !(PORTABLE40 || PORTABLE || UNITY3D)
         public static XmlDateTimeSerializationMode ToSerializationMode(DateTimeKind kind)
         {
             switch (kind)
@@ -195,7 +197,6 @@ namespace Newtonsoft.Json.Utilities
             return dateTime;
         }
 
-        #region Parse
         internal static bool TryParseDateTimeIso(StringReference text, DateTimeZoneHandling dateTimeZoneHandling, out DateTime dt)
         {
             DateTimeParser dateTimeParser = new DateTimeParser();
@@ -287,7 +288,11 @@ namespace Newtonsoft.Json.Utilities
                     offset = new TimeSpan(dateTimeParser.ZoneHour, dateTimeParser.ZoneMinute, 0);
                     break;
                 default:
+#if UNITY3D
+                    offset = GetUtcOffset(d);
+#else
                     offset = TimeZoneInfo.Local.GetUtcOffset(d);
+#endif
                     break;
             }
 
@@ -611,9 +616,7 @@ namespace Newtonsoft.Json.Utilities
 
             return true;
         }
-        #endregion
 
-        #region Write
         internal static void WriteDateTimeString(TextWriter writer, DateTime value, DateFormatHandling format, string formatString, CultureInfo culture)
         {
             if (string.IsNullOrEmpty(formatString))
@@ -765,7 +768,6 @@ namespace Newtonsoft.Json.Utilities
             }
         }
 #endif
-        #endregion
 
         private static void GetDateValues(DateTime td, out int year, out int month, out int day)
         {

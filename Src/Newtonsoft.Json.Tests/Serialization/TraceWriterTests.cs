@@ -43,7 +43,7 @@ namespace Newtonsoft.Json.Tests.Serialization
     [TestFixture]
     public class TraceWriterTests : TestFixtureBase
     {
-#if !(PORTABLE || DNXCORE50 || NETFX_CORE || PORTABLE40)
+#if !(PORTABLE || DNXCORE50 || NETFX_CORE || PORTABLE40 || UNITY3D)
         [Test]
         public void DiagnosticsTraceWriterTest()
         {
@@ -657,7 +657,7 @@ Newtonsoft.Json Error: 0 : Error!
             Assert.IsTrue(traceWriter.TraceRecords[9].Message.StartsWith("Finished deserializing System.Collections.Generic.List`1[System.Object]. Path '$values'"));
         }
 
-#if !(NETFX_CORE || PORTABLE || DNXCORE50 || PORTABLE40)
+#if !(NETFX_CORE || PORTABLE || DNXCORE50 || PORTABLE40 || UNITY3D)
         [Test]
         public void DeserializeISerializable()
         {
