@@ -499,6 +499,7 @@ namespace Newtonsoft.Json.Tests.Converters
             SerializeAsBaz
         }
 
+#if !UNITY3D
         [Test]
         public void DataContractSerializerDuplicateNameEnumTest()
         {
@@ -526,6 +527,7 @@ namespace Newtonsoft.Json.Tests.Converters
         }
 #endif
     }
+#endif
 
 #if !NET20
     [DataContract]

@@ -33,12 +33,14 @@ using System.Collections.Generic;
 using System.Numerics;
 #endif
 #if !(NET20 || NETFX_CORE || DNXCORE50)
+#if !UNITY3D
 using System.ComponentModel.DataAnnotations;
 using System.Configuration;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization.Formatters;
 using System.Threading;
 using System.Web.Script.Serialization;
+#endif
 #endif
 using System.Text;
 using System.Text.RegularExpressions;
@@ -57,7 +59,9 @@ using Newtonsoft.Json;
 using System.IO;
 using System.Collections;
 using System.Xml;
+#if !UNITY3D
 using System.Xml.Serialization;
+#endif
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using Newtonsoft.Json.Bson;
@@ -74,7 +78,9 @@ using System.Globalization;
 using Newtonsoft.Json.Utilities;
 using System.Reflection;
 #if !NET20
+#if !UNITY3D
 using System.Xml.Linq;
+#endif
 using System.Collections.Specialized;
 using System.Linq.Expressions;
 #endif
@@ -87,7 +93,9 @@ using Newtonsoft.Json.Utilities.LinqBridge;
 using System.Linq;
 #endif
 #if !(NETFX_CORE || DNXCORE50)
+#if !UNITY3D
 using System.Drawing;
+#endif
 
 #endif
 
@@ -736,7 +744,7 @@ namespace Newtonsoft.Json.Tests.Serialization
             Assert.AreEqual("Name!", c2.Name);
         }
 
-#if !(NETFX_CORE || DNXCORE50 || NET20)
+#if !(NETFX_CORE || DNXCORE50 || NET20 || UNITY3D)
         [MetadataType(typeof(CustomerValidation))]
         public partial class CustomerWithMetadataType
         {
@@ -1258,7 +1266,7 @@ namespace Newtonsoft.Json.Tests.Serialization
             serializer.TraceWriter = traceWriter;
             Assert.AreEqual(traceWriter, serializer.TraceWriter);
 
-#if !(PORTABLE || PORTABLE40 || NETFX_CORE || NET20 || DNXCORE50)
+#if !(PORTABLE || PORTABLE40 || NETFX_CORE || NET20 || DNXCORE50 || UNITY3D)
             serializer.TypeNameAssemblyFormat = FormatterAssemblyStyle.Full;
             Assert.AreEqual(FormatterAssemblyStyle.Full, serializer.TypeNameAssemblyFormat);
 #endif
@@ -1359,7 +1367,7 @@ namespace Newtonsoft.Json.Tests.Serialization
             settings.TraceWriter = traceWriter;
             Assert.AreEqual(traceWriter, settings.TraceWriter);
 
-#if !(PORTABLE || PORTABLE40 || NETFX_CORE || NET20 || DNXCORE50)
+#if !(PORTABLE || PORTABLE40 || NETFX_CORE || NET20 || DNXCORE50 || UNITY3D)
             settings.TypeNameAssemblyFormat = FormatterAssemblyStyle.Full;
             Assert.AreEqual(FormatterAssemblyStyle.Full, settings.TypeNameAssemblyFormat);
 #endif
@@ -1454,7 +1462,7 @@ namespace Newtonsoft.Json.Tests.Serialization
             serializerProxy.TraceWriter = traceWriter;
             Assert.AreEqual(traceWriter, serializerProxy.TraceWriter);
 
-#if !(PORTABLE || PORTABLE40 || NETFX_CORE || NET20 || DNXCORE50)
+#if !(PORTABLE || PORTABLE40 || NETFX_CORE || NET20 || DNXCORE50 || UNITY3D)
             serializerProxy.TypeNameAssemblyFormat = FormatterAssemblyStyle.Full;
             Assert.AreEqual(FormatterAssemblyStyle.Full, serializerProxy.TypeNameAssemblyFormat);
 #endif
@@ -3472,7 +3480,7 @@ keyword such as type of business.""
             Assert.AreEqual("titleId", n.FidOrder[n.FidOrder.Count - 1]);
         }
 
-#if !(NET20 || NETFX_CORE || DNXCORE50)
+#if !(NET20 || NETFX_CORE || DNXCORE50 || UNITY3D)
         [MetadataType(typeof(OptInClassMetadata))]
         public class OptInClass
         {
@@ -5278,6 +5286,7 @@ Path '', line 1, position 1.");
             }
         }
 
+#if !UNITY3D
 #if !NET20
         public class XNodeTestObject
         {
@@ -5345,7 +5354,7 @@ Path '', line 1, position 1.");
             Assert.AreEqual(testObject.Document.InnerXml, newTestObject.Document.InnerXml);
         }
 #endif
-
+#endif
         [Test]
         public void FullClientMapSerialization()
         {
@@ -6332,6 +6341,7 @@ Path '', line 1, position 1.");
 }", result);
         }
 
+#if !UNITY3D
         [Test]
         public void ChildDataContractTestWithDataContractSerializer()
         {
@@ -6351,7 +6361,7 @@ Path '', line 1, position 1.");
             Assert.AreEqual(@"<JsonSerializerTest.ChildDataContract xmlns=""http://schemas.datacontract.org/2004/07/Newtonsoft.Json.Tests.Serialization"" xmlns:i=""http://www.w3.org/2001/XMLSchema-instance""><nonVirtualMember>NonVirtualMember!</nonVirtualMember><virtualMember>VirtualMember!</virtualMember><NewMember i:nil=""true""/></JsonSerializerTest.ChildDataContract>", xml);
         }
 #endif
-
+#endif
         [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
         public class BaseObject
         {
@@ -6949,7 +6959,7 @@ Path '', line 1, position 1.");
             Assert.AreEqual(-3, StaticTestClass.z);
         }
 
-#if !(NET20 || NETFX_CORE || DNXCORE50)
+#if !(NET20 || NETFX_CORE || DNXCORE50 || UNITY3D)
         [Test]
         public void DeserializeDecimalsWithCulture()
         {
@@ -7469,7 +7479,7 @@ Path '', line 1, position 1.");
         }
 #endif
 
-#if !(NETFX_CORE || DNXCORE50)
+#if !(NETFX_CORE || DNXCORE50 || UNITY3D)
         [Test]
         public void MetroBlogPost()
         {
@@ -8024,7 +8034,7 @@ Path '', line 1, position 1.");
             ExceptionAssert.Throws<JsonReaderException>(() => { s.Deserialize<Dictionary<string, int>>(new JsonTextReader(new StringReader(json))); }, "Additional text encountered after finished reading JSON content: {. Path '', line 1, position 7.");
         }
 
-#if !(NETFX_CORE || PORTABLE || DNXCORE50 || PORTABLE40)
+#if !(NETFX_CORE || PORTABLE || DNXCORE50 || PORTABLE40 || UNITY3D)
         [Test]
         public void DeserializeException()
         {
@@ -8874,7 +8884,7 @@ Path '', line 1, position 1.");
 ]", json);
         }
 
-#if !(PORTABLE || PORTABLE40 || NETFX_CORE || DNXCORE50)
+#if !(PORTABLE || PORTABLE40 || NETFX_CORE || DNXCORE50 || UNITY3D)
         [Test]
         public void SerializeDictionaryWithStructKey()
         {
@@ -9563,7 +9573,7 @@ Path '', line 1, position 1.");
         }
 #endif
 
-#if !(NETFX_CORE || DNXCORE50)
+#if !(NETFX_CORE || DNXCORE50 || UNITY3D)
         [Test]
         public void MailMessageConverterTest()
         {

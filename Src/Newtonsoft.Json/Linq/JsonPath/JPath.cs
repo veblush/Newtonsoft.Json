@@ -1,3 +1,5 @@
+#if !NO_JSONPATH
+
 #region License
 // Copyright (c) 2007 James Newton-King
 //
@@ -775,3 +777,5 @@ namespace Newtonsoft.Json.Linq.JsonPath
         }
     }
 }
+
+#endif
